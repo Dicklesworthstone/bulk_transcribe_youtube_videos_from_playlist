@@ -42,6 +42,11 @@ This Python-based tool is designed for transcribing YouTube videos and playlists
 6. **Output**:
    - The transcripts are saved in plain text, CSV, and JSON formats, providing both the raw transcript and structured metadata.
 
+| ![Screenshot of it in Action](https://github.com/Dicklesworthstone/bulk_transcribe_youtube_videos_from_playlist/blob/main/screenshot.webp) | 
+|:--:| 
+| *Screenshot of it in Action* |
+
+
 ### Use Cases
 
 - **Content Analysis**: Useful for researchers and analysts working with video content.
