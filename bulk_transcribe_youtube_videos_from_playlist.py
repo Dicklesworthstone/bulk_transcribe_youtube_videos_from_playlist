@@ -13,6 +13,7 @@ from numba import cuda
 convert_single_video = 1  # Set this to 1 to process a single video, 0 for a playlist
 use_spacy_for_sentence_splitting = 1
 max_simultaneous_youtube_downloads = 4
+disable_cuda_override = 1 # Set this to 1 to disable CUDA even if it is available
 single_video_url = 'https://www.youtube.com/watch?v=sWAaJF9Wk0w'  # Single video URL
 playlist_url = 'https://www.youtube.com/playlist?list=PLjpPMe3LP1XKgqqzqz4j6M8-_M_soYxiV' # Playlist URL
 if convert_single_video:
@@ -115,7 +116,7 @@ async def compute_transcript_with_whisper_from_audio_func(audio_file_path, audio
     combined_transcript_text = ""
     combined_transcript_text_list_of_metadata_dicts = []
     list_of_transcript_sentences = []
-    if cuda.is_available():
+    if cuda.is_available() and not disable_cuda_override:
         print("CUDA is available. Using GPU for transcription.")
         device = "cuda"
         compute_type = "float16"  # Use FP16 for faster computation on GPU
