@@ -70,9 +70,8 @@ This Python-based tool is designed for transcribing YouTube videos and playlists
 2. **Running the Script**:
    - Execute the script with Python:
      ```bash
-     python3 [script_name].py
+     python3 bulk_transcribe_youtube_videos_from_playlist.py
      ```
-   Replace `[script_name].py` with the actual name of the script.
 
 ## Implementation Details
 
@@ -109,10 +108,6 @@ This Python-based tool is designed for transcribing YouTube videos and playlists
 
 - The script's main execution starts in the `__main__` block, where it selects the URL to process (single video or playlist) and initiates the `process_video_or_playlist` coroutine.
 - **Concurrent Downloads and Transcription**: `process_video_or_playlist` handles the asynchronous downloading and transcription of videos. It creates a semaphore to limit the number of simultaneous downloads based on `max_simultaneous_youtube_downloads`. 
-
-### Asynchronous Programming
-
-- The script extensively uses `asyncio` for handling asynchronous tasks, particularly for downloading and processing multiple videos concurrently. This approach allows for efficient utilization of network and computing resources, particularly beneficial when dealing with multiple videos in a playlist.
 
 ## Whisper Model Configuration
 
