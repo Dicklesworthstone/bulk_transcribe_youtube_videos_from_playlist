@@ -4,7 +4,9 @@
 
 This Python-based tool is designed for transcribing YouTube videos and playlists into text. It integrates various technologies like WhisperModel for transcription, SpaCy for natural language processing, and CUDA for GPU acceleration, aimed at processing video content efficiently. The script is capable of handling both individual videos and entire playlists, outputting accurate transcripts along with metadata.
 
-![Bulk Transcripts Have Never Been This Easy!](https://github.com/Dicklesworthstone/bulk_transcribe_youtube_videos_from_playlist/blob/main/readme_image_2.webp)
+| ![Bulk Transcripts Have Never Been This Easy!](https://github.com/Dicklesworthstone/bulk_transcribe_youtube_videos_from_playlist/blob/main/readme_image_2.webp) | 
+|:--:| 
+| *Bulk Transcripts Have Never Been This Easy!* |
 
 ## Functional Overview
 
