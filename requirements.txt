@@ -1,0 +1,7 @@
+faster-whisper
+psutil
+pytube
+pandas
+fastapi
+spacy
+numba
