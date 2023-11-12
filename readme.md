@@ -194,4 +194,6 @@ See my other open-source projects at [https://github.com/Dicklesworthstone](http
 - [SQLAlchemy Data Model Visualizer](https://github.com/Dicklesworthstone/sqlalchemy_data_model_visualizer)
 - [Llama2 Aided Tesseract OCR](https://github.com/Dicklesworthstone/llama2_aided_tesseract)
 
-![Take Your YouTube Transcript Addition to the Next Level!](https://github.com/Dicklesworthstone/bulk_transcribe_youtube_videos_from_playlist/blob/main/readme_image_1.webp)
+| ![Take Your YouTube Transcript Addition to the Next Level!](https://github.com/Dicklesworthstone/bulk_transcribe_youtube_videos_from_playlist/blob/main/readme_image_2.webp) | 
+|:--:| 
+| *Take Your YouTube Transcript Addition to the Next Level!* |
