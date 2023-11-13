@@ -159,11 +159,14 @@ async def process_video_or_playlist(url, max_simultaneous_downloads, max_workers
         videos = playlist.videos
     download_semaphore = asyncio.Semaphore(max_simultaneous_downloads)
     async def download_and_transcribe(video):
-        async with download_semaphore:
-            audio_path, audio_filename = await download_audio(video)
-            if audio_path and audio_filename:
-                audio_file_size_mb = os.path.getsize(audio_path) / (1024 * 1024)
-                await compute_transcript_with_whisper_from_audio_func(audio_path, audio_filename, audio_file_size_mb)
+        try:
+            async with download_semaphore:
+                audio_path, audio_filename = await download_audio(video)
+                if audio_path and audio_filename:
+                    audio_file_size_mb = os.path.getsize(audio_path) / (1024 * 1024)
+                    await compute_transcript_with_whisper_from_audio_func(audio_path, audio_filename, audio_file_size_mb)
+        except Exception as e:
+            print(f"Error processing video {video.title}: {e}")
     tasks = [download_and_transcribe(video) for video in videos]
     await asyncio.gather(*tasks)
 
