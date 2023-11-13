@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Transcript Cleaner</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/compromise@13.10.2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <style>
+        #reader {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: #000;
+            padding: 60px 50px 50px 50px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            font-family: 'Cambria', serif;
+            color: #aaa;
+            line-height: 1.6;
+            font-size: 20px;
+            text-align: justify;
+            text-justify: inter-word;
+        }
+
+        #reader-content {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        #close-reader {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            color: #aaa;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        p {
+            margin-bottom: 1em;
+        }
+
+        #settings {
+            position: absolute;
+            right: 20px;
+            top: 50px;
+            color: #aaa;
+            cursor: pointer;
+            display: none;
+            font-size: 14px;
+        }
+
+        #reader:hover #settings {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>YouTube Transcript Cleaner</h1>
+        <hr/>
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Original Transcript</h3>
+                <textarea id="original" class="form-control" rows="10"></textarea>
+                <br/>
+                <button id="clean" class="btn btn-primary">Clean Transcript</button>
+                <input type="file" id="fileUpload" accept=".txt" style="display:none;">
+                <button id="uploadFile" class="btn btn-secondary">Upload File</button>
+                <button id="downloadFile" class="btn btn-secondary">Download Cleaned Transcript</button>
+            </div>
+            <div class="col-md-6">
+                <h3>Cleaned Transcript</h3>
+                <textarea id="cleaned" class="form-control" rows="10"></textarea>
+                <br/>
+                <button id="read" class="btn btn-success">Display Cleaned Transcript in Reader Mode</button>
+            </div>
+        </div>
+        <br/>
+        <div id="loading" style="display: none;">
+            <h3>Processing... Please wait...</h3>
+        </div>
+    </div>
+
+    <div id="reader">
+        <div id="close-reader" onclick="closeReaderMode()">❌ Close</div>
+        <div id="settings">
+            🖥️ Text Size: 
+            <button onclick="increaseFontSize()">➕</button>
+            <button onclick="decreaseFontSize()">➖</button>
+            Width: 
+            <button onclick="increaseWidth()">➕</button>
+            <button onclick="decreaseWidth()">➖</button>
+            🖋️ Font: 
+            <select id="font-selector" onchange="changeFont()">
+                <option>Cambria</option>
+                <option>Georgia</option>
+                <option>Times New Roman</option>
+                <option>Palatino</option>
+                <option>Garamond</option>
+            </select>
+            🖨️<button onclick="window.print()">Print</button>
+        </div>
+        <div id="reader-content"></div>
+    </div>
+
+    <script>
+        function cleanTranscript() {
+            var inputText = document.getElementById('original').value;
+            var splitText = inputText.split('\n');
+            var cleanedText = '';
+            var currentLine = '';
+            
+            splitText.forEach(function(line) {
+                if (line.startsWith('- ') || currentLine.endsWith(', ')) {
+                    currentLine += line.replace('- ', '') + ' ';
+                } else {
+                    cleanedText += currentLine;
+                    currentLine = line + ' ';
+                }
+            });
+            cleanedText += currentLine;
+
+            // Split the cleaned text into sentences using compromise
+            var sentences = nlp(cleanedText).sentences().out('array');
+            var paragraphs = '';
+            var paragraph = '';
+            sentences.forEach(function(sentence, index) {
+                paragraph += sentence.trim() + ' ';
+                if ((index + 1) % 5 == 0) {
+                    paragraphs += '<p>' + paragraph + '</p>';
+                    paragraph = '';
+                }
+            });
+
+            // Add the last paragraph if it's not empty
+            if (paragraph != '') {
+                paragraphs += '<p>' + paragraph + '</p>';
+            }
+            document.getElementById('cleaned').value = paragraphs;
+        }
+
+
+        function displayReaderMode() {
+            var text = document.getElementById('cleaned').value;
+            document.getElementById('reader').style.display = 'block';
+            document.getElementById('reader-content').innerHTML = text;
+        }
+
+        function closeReaderMode() {
+            document.getElementById('reader').style.display = 'none';
+        }
+
+        function increaseFontSize() {
+            var currentFontSize = parseFloat(window.getComputedStyle(document.getElementById('reader')).fontSize);
+            document.getElementById('reader').style.fontSize = (currentFontSize + 2) + 'px';
+        }
+
+        function decreaseFontSize() {
+            var currentFontSize = parseFloat(window.getComputedStyle(document.getElementById('reader')).fontSize);
+            document.getElementById('reader').style.fontSize = (currentFontSize - 2) + 'px';
+        }
+
+        function increaseWidth() {
+            var currentWidth = parseFloat(window.getComputedStyle(document.getElementById('reader-content')).maxWidth);
+            document.getElementById('reader-content').style.maxWidth = (currentWidth + 50) + 'px';
+        }
+
+        function decreaseWidth() {
+            var currentWidth = parseFloat(window.getComputedStyle(document.getElementById('reader-content')).maxWidth);
+            document.getElementById('reader-content').style.maxWidth = (currentWidth - 50) + 'px';
+        }
+
+        function changeFont() {
+            var newFont = document.getElementById('font-selector').value;
+            document.getElementById('reader').style.fontFamily = newFont;
+        }
+
+        $('#clean').on('click', function() {
+            cleanTranscript();
+        });
+
+        $('#read').on('click', function() {
+            displayReaderMode();
+        });
+
+        $('#uploadFile').on('click', function() {
+            $('#fileUpload').trigger('click');
+        });
+
+        $('#fileUpload').on('change', function(evt) {
+            var file = evt.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var contents = e.target.result;
+                    document.getElementById('original').value = contents;
+                    cleanTranscript();
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        $('#downloadFile').on('click', function() {
+            var cleanedText = document.getElementById('cleaned').value;
+            // Replace paragraph tags with newline characters to retain formatting
+            var textToDownload = cleanedText.replace(/<p>/g, '').replace(/<\/p>/g, '\n\n');
+            if (textToDownload) {
+                var blob = new Blob([textToDownload], {type: 'text/plain'});
+                var url = URL.createObjectURL(blob);
+                var link = document.createElement('a');
+                link.href = url;
+                link.download = 'cleaned_transcript.txt';
+                link.click();
+            }
+        });
+
+    </script>
+</body>
+</html>
