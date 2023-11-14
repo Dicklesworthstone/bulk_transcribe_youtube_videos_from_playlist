@@ -45,7 +45,7 @@ This Python-based tool is designed for transcribing YouTube videos and playlists
 7. **Display/Read**:
    - To make the transcripts easier to read, an html file is provided, `transcript_reader.html`, which does further clean up and offers a "Reader Mode" where you can choose the font, text size, text width, and toggle dark mode. Simply open this html file in your browser and paste in the transcript text from one of the generated files in the `generated_transcript_combined_texts` folder.
      
-| ![Screenshot of it in Action](https://github.com/Dicklesworthstone/bulk_transcribe_youtube_videos_from_playlist/blob/main/screenshot.webp) | 
+| ![Screenshot of it in Action](https://raw.githubusercontent.com/Dicklesworthstone/bulk_transcribe_youtube_videos_from_playlist/main/screenshot.webp) | 
 |:--:| 
 | *Screenshot of it in Action* |
 
