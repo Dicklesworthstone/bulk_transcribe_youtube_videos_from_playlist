@@ -49,7 +49,7 @@ This Python-based tool is designed for transcribing YouTube videos and playlists
 |:--:| 
 | *Screenshot of it in Action* |
 
-| ![Screenshot 1]([URL_of_first_screenshot](https://github.com/Dicklesworthstone/bulk_transcribe_youtube_videos_from_playlist/blob/main/readme_image_1.webp)) | ![Screenshot 2]([URL_of_second_screenshot](https://github.com/Dicklesworthstone/bulk_transcribe_youtube_videos_from_playlist/blob/main/readme_image_2.webp)) |
+| ![Screenshot 1](https://raw.githubusercontent.com/Dicklesworthstone/bulk_transcribe_youtube_videos_from_playlist/main/transcript_reader_screenshot_1.webp) | ![Screenshot 2](https://raw.githubusercontent.com/Dicklesworthstone/bulk_transcribe_youtube_videos_from_playlist/main/transcript_reader_screenshot_2.webp) |
 |:--:|:--:|
 | *Paste Transcript Text into the Transcript Reader HTML File* | *Reader using Dark Mode and Cambria Font* |
 
