@@ -124,7 +124,7 @@ async def compute_transcript_with_whisper_from_audio_func(audio_file_path, audio
         print("CUDA not available. Using CPU for transcription.")
         device = "cpu"
         compute_type = "auto"  # Use default compute type for CPU
-    model = WhisperModel("large-v2", device=device, compute_type=compute_type)
+    model = WhisperModel("large-v3", device=device, compute_type=compute_type)
     request_time = datetime.utcnow()
     print(f"Computing transcript for {audio_file_name} which has a {audio_file_size_mb :.2f}MB file size...")
     segments, info = await asyncio.to_thread(model.transcribe, audio_file_path, beam_size=10, vad_filter=True)
