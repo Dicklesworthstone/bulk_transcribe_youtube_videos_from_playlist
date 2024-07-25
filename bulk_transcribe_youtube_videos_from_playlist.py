@@ -5,7 +5,7 @@ import re
 import psutil
 import glob
 from datetime import datetime
-from pytube import YouTube, Playlist
+from pytubefix import YouTube, Playlist
 import pandas as pd
 from faster_whisper import WhisperModel
 from numba import cuda
