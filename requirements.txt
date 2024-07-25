@@ -1,6 +1,6 @@
 faster-whisper
 psutil
-pytube
+pytubefix
 pandas
 fastapi
 spacy
