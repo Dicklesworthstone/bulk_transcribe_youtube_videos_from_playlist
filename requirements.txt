@@ -5,3 +5,7 @@ pandas
 fastapi
 spacy
 numba
+openai
+pydub
+ruff
+tqdm

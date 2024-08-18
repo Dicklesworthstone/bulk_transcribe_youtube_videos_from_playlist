@@ -13,9 +13,12 @@ This Python-based tool is designed for transcribing YouTube videos and playlists
 ### Core Components
 
 - **YouTube Downloading**: Uses `pytube` to download the audio from YouTube videos or playlists.
-- **Audio Transcription**: Leverages `faster_whisper.WhisperModel` for converting audio to text. This model is a variant of OpenAI's Whisper designed for speed and accuracy.
+- **Audio Transcription**: 
+  - Local Inference: Leverages `faster_whisper.WhisperModel` for converting audio to text. This model is a variant of OpenAI's Whisper designed for speed and accuracy.
+  - OpenAI API: Optionally uses the OpenAI API for transcription, though this uses an older and less accurate version of the Whisper model.
 - **NLP Processing**: Optionally, integrates SpaCy for sophisticated sentence splitting, enhancing the readability and structure of the transcript.
 - **CUDA Acceleration**: Implements CUDA support for GPU utilization, enhancing processing speed for compatible hardware.
+- **Progress Tracking**: Utilizes `tqdm` for displaying progress bars during transcription.
 
 ### Detailed Workflow
 
@@ -32,8 +35,8 @@ This Python-based tool is designed for transcribing YouTube videos and playlists
    - It ensures unique naming for each audio file to avoid overwrites.
 
 4. **Transcription**:
-   - The audio files are passed to the WhisperModel for transcription.
-   - The script handles GPU acceleration if available, defaulting to CPU otherwise.
+   - The audio files are passed to either the local WhisperModel or the OpenAI API for transcription.
+   - The script handles GPU acceleration if available, defaulting to CPU otherwise for local inference.
    - Transcription results are split into sentences, either using SpaCy or a custom regex-based splitter.
 
 5. **Metadata Generation**:
@@ -44,7 +47,7 @@ This Python-based tool is designed for transcribing YouTube videos and playlists
 
 7. **Display/Read**:
    - To make the transcripts easier to read, an html file is provided, `transcript_reader.html`, which does further clean up and offers a "Reader Mode" where you can choose the font, text size, text width, and toggle dark mode. Simply open this html file in your browser and paste in the transcript text from one of the generated files in the `generated_transcript_combined_texts` folder.
-     
+
 | ![Screenshot of it in Action](https://raw.githubusercontent.com/Dicklesworthstone/bulk_transcribe_youtube_videos_from_playlist/main/screenshot.webp) | 
 |:--:| 
 | *Screenshot of it in Action* |
@@ -52,7 +55,6 @@ This Python-based tool is designed for transcribing YouTube videos and playlists
 | ![Screenshot 1](https://raw.githubusercontent.com/Dicklesworthstone/bulk_transcribe_youtube_videos_from_playlist/main/transcript_reader_screenshot_1.webp) | ![Screenshot 2](https://raw.githubusercontent.com/Dicklesworthstone/bulk_transcribe_youtube_videos_from_playlist/main/transcript_reader_screenshot_2.webp) |
 |:--:|:--:|
 | *Paste Transcript Text into the Transcript Reader HTML File* | *Reader using Dark Mode and Cambria Font* |
-
 
 ### Use Cases
 
@@ -63,27 +65,100 @@ This Python-based tool is designed for transcribing YouTube videos and playlists
 
 ## Setup Instructions
 
-1. **Environment Setup**:
-   - Create a Python virtual environment and activate it:
-     ```bash
-     python3 -m venv venv
-     source venv/bin/activate
-     ```
-   - Upgrade pip and install wheel:
-     ```bash
-     python3 -m pip install --upgrade pip
-     python3 -m pip install wheel
-     ```
-   - Install dependencies from `requirements.txt`:
-     ```bash
-     pip install -r requirements.txt
-     ```
+### 1. Clone the Repository
 
-2. **Running the Script**:
-   - Execute the script with Python:
-     ```bash
-     python3 bulk_transcribe_youtube_videos_from_playlist.py
-     ```
+```bash
+git clone https://github.com/Dicklesworthstone/bulk_transcribe_youtube_videos_from_playlist.git
+cd bulk_transcribe_youtube_videos_from_playlist
+```
+
+### 2. Install Pyenv and Python 3.12 (Optional)
+
+If you prefer to use pyenv for managing Python versions, follow these steps:
+
+```bash
+# Install pyenv if not already installed
+if ! command -v pyenv &> /dev/null; then
+    git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+    echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
+    echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
+    echo 'eval "$(pyenv init --path)"' >> ~/.bashrc
+    source ~/.bashrc
+fi
+
+# Update pyenv and install Python 3.12
+cd ~/.pyenv && git pull && cd -
+pyenv install 3.12
+
+# Set local Python version for the project
+pyenv local 3.12
+```
+
+### 3. Set Up Python Environment
+
+Choose one of the following methods:
+
+#### Option A: Using system Python
+
+```bash
+# Create a virtual environment
+python3 -m venv venv
+
+# Activate the virtual environment
+source venv/bin/activate
+
+# Upgrade pip and install wheel
+python3 -m pip install --upgrade pip
+python3 -m pip install wheel
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+#### Option B: Using pyenv
+
+```bash
+# Create a virtual environment
+python -m venv venv
+
+# Activate the virtual environment
+source venv/bin/activate
+
+# Upgrade pip and install wheel
+python -m pip install --upgrade pip
+python -m pip install wheel
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### 4. Configure the Script
+
+Open the `bulk_transcribe_youtube_videos_from_playlist.py` file and set the following variables according to your preferences:
+
+- `convert_single_video`: Set to `1` for a single video, `0` for a playlist
+- `use_spacy_for_sentence_splitting`: Set to `1` to use SpaCy, `0` for regex-based splitting
+- `use_openai_api_for_transcription`: Set to `1` to use OpenAI API, `0` for local Whisper model
+- `openai_api_key`: If using OpenAI API, replace with your API key
+- `single_video_url`: URL of the single video (if `convert_single_video` is `1`)
+- `playlist_url`: URL of the playlist (if `convert_single_video` is `0`)
+
+### 5. Running the Script
+
+Execute the script with Python:
+
+```bash
+python bulk_transcribe_youtube_videos_from_playlist.py
+```
+
+### Notes:
+
+- If you're using the OpenAI API for transcription, make sure you have a valid API key and sufficient credits.
+- The script will create necessary directories for storing downloaded audio and generated transcripts.
+- Progress bars will display the transcription progress for each video.
+- Remember that local inference using the Whisper model provides higher accuracy compared to the OpenAI API version.
+
+If you encounter any issues during setup or execution, please check the project's issue tracker on GitHub or create a new issue with details about the problem.
 
 ## Implementation Details
 
@@ -101,8 +176,8 @@ This Python-based tool is designed for transcribing YouTube videos and playlists
 
 ### Transcription and Text Processing
 
-- **Transcription Setup**: `compute_transcript_with_whisper_from_audio_func` configures the WhisperModel for transcription. It checks CUDA availability and sets the device and compute type accordingly.
-- **Transcript Computation**: This function performs the actual transcription, processing the audio file through WhisperModel. It captures segments of transcribed text along with their metadata (start and end times, average log probability).
+- **Transcription Setup**: `compute_transcript_with_whisper_from_audio_func` configures either the local WhisperModel or the OpenAI API for transcription. For local inference, it checks CUDA availability and sets the device and compute type accordingly.
+- **Transcript Computation**: This function performs the actual transcription, processing the audio file through the chosen method. It captures segments of transcribed text along with their metadata (start and end times, average log probability).
 - **Sentence Splitting**: Depending on the `use_spacy_for_sentence_splitting` flag, the script either uses SpaCy or a custom regex-based method for sentence splitting. This is important for structuring the transcript into readable sentences.
 
 ### Metadata Generation and Output
@@ -123,18 +198,27 @@ This Python-based tool is designed for transcribing YouTube videos and playlists
 
 ## Whisper Model Configuration
 
-- **Model Initialization**: Initializes the WhisperModel with the specified device and compute type. The "large-v2" model variant is chosen, balancing between performance and accuracy.
+### Local Inference
+
+- **Model Initialization**: Initializes the WhisperModel with the specified device and compute type. The "large-v3" model variant is chosen, balancing between performance and accuracy.
 - **Request Time Tracking**: The function records the UTC datetime when the transcription request starts. This can be used for performance metrics or logging purposes.
+
+### OpenAI API
+
+- **API Initialization**: Sets up the OpenAI API client with the provided API key.
+- **Model Selection**: Uses the "whisper-1" model for transcription.
+
+**Important Note**: The OpenAI API version of Whisper uses an older and less accurate version of the Whisper model. Users will achieve significantly higher transcription accuracy using local inference with the latest Whisper model.
 
 ### Transcription Process
 
-- **Transcription Execution**: Calls `model.transcribe` on a separate thread using `asyncio.to_thread` to maintain the asynchronous nature of the script. This function performs the actual audio-to-text transcription.
-- **Transcription Settings**: The transcription uses a `beam_size` of 10 and activates the `vad_filter`. The `beam_size` parameter affects the trade-off between accuracy and speed during transcription - a higher value can lead to more accurate results but requires more computational resources. The `vad_filter` (Voice Activity Detection filter) helps in ignoring non-speech segments in the audio, focusing the transcription process on relevant audio parts.
+- **Transcription Execution**: For local inference, calls `model.transcribe` on a separate thread using `asyncio.to_thread` to maintain the asynchronous nature of the script. For the OpenAI API, sends a request to the transcription endpoint.
+- **Transcription Settings**: For local inference, the transcription uses a `beam_size` of 10 and activates the `vad_filter`. The `beam_size` parameter affects the trade-off between accuracy and speed during transcription - a higher value can lead to more accurate results but requires more computational resources. The `vad_filter` (Voice Activity Detection filter) helps in ignoring non-speech segments in the audio, focusing the transcription process on relevant audio parts.
 
 ### Processing Transcription Results
 
-- **Segment Processing**: Each segment returned by the WhisperModel contains the transcribed text, its start and end times in the audio, and an average log probability (a measure of confidence). The function iterates over these segments, compiling the full transcript and generating a list of sentences using `sophisticated_sentence_splitter`.
-- **Metadata Generation**: For each segment, it rounds off the start and end times and the average log probability to two decimal places and stores this data in a list of dictionaries. This metadata includes timing and confidence information for each transcribed segment.
+- **Segment Processing**: Each segment returned by the transcription process contains the transcribed text, its start and end times in the audio, and (for local inference) an average log probability (a measure of confidence). The function iterates over these segments, compiling the full transcript and generating a list of sentences using `sophisticated_sentence_splitter`.
+- **Metadata Generation**: For each segment, it rounds off the start and end times and the average log probability (where applicable) to two decimal places and stores this data in a list of dictionaries. This metadata includes timing and confidence information for each transcribed segment.
 
 ### Output File Generation
 
@@ -162,6 +246,10 @@ This Python-based tool is designed for transcribing YouTube videos and playlists
 
 - **Robustness**: The script is designed to handle various errors gracefully, such as issues in downloading audio, absence of audio streams, or failures in transcription.
 - **Logging**: Throughout the process, the script logs important information, such as the status of downloads, transcription progress, and any errors encountered. This logging is crucial for monitoring the script's performance and troubleshooting potential issues.
+
+## Progress Tracking
+
+- **TQDM Integration**: The script now uses `tqdm` to display progress bars during the transcription process, providing visual feedback on the progress of each video being processed.
 
 ## Conclusion
 
